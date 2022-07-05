@@ -120,7 +120,10 @@ const user = {
           commit('SET_TOKEN', '')
           commit('SET_ROLES', [])
           commit('SET_PERMISSIONS', [])
-          // window.__USERCENTER__.logout().then(res => {})
+          localStorage.removeItem(getKeyWithNamespace('clientId'))
+          localStorage.removeItem(getKeyWithNamespace('appClientId'))
+          localStorage.removeItem(getKeyWithNamespace('redirectUrl'))
+          localStorage.removeItem(getKeyWithNamespace('hostName'))
           removeToken()
           resolve()
         }).catch(error => {
@@ -176,12 +179,19 @@ const user = {
       })
     },
     codeLogin({ commit,state }, data) {
-      debugger
-      return new Promise((resolve, reject) => {
+      return new Promise(async (resolve, reject) => {
         // 使用euaf平台clientId获取集团账户中心access_token
         let clientId = localStorage.getItem(getKeyWithNamespace('clientId'))
+        if (!clientId) {
+          let tempData = await getClientId(config.clientCode)
+          if (tempData.code === 200) {
+            clientId = tempData.data.clientId // euaf平台clientId
+            localStorage.setItem(getKeyWithNamespace('clientId'), clientId)
+          }
+        }
         lodeLogin(clientId, data.code, state.loginType).then(res => {
           let data = res.data
+          localStorage.setItem('userNameInfo',data.user_name)
           setToken(data.access_token)
           commit('SET_TOKEN', data.access_token)
           setExpiresIn(data.expires_in)

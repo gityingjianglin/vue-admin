@@ -1,6 +1,15 @@
+/*
+ * @Author: yingjianglin
+ * @Date: 2022-06-23 09:38:56
+ * @LastEditors: yingjianglin
+ * @LastEditTime: 2022-07-05 12:00:52
+ * @Description: 
+ * 
+ */
 import Cookies from 'js-cookie'
+import config from '@/config/config'
 
-const TokenKey = 'Admin-Token'
+const TokenKey = config.namespace + '-Token'
 
 const ExpiresInKey = 'Admin-Expires-In'
 
